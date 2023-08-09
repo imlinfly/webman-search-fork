@@ -6,17 +6,19 @@ trait SettingsTrait
 {
     public function getTasks()
     {
-        return $this->meilisearch->index($this->index)->getTasks();
+        return $this->meilisearch->index($this->_index)->getTasks();
     }
+
     public function getTask($id)
     {
-       return $this->meilisearch->index($this->index)->getTask($id);
+        return $this->meilisearch->index($this->_index)->getTask($id);
     }
 
     public function getKeys()
     {
         return $this->meilisearch->getKeys();
     }
+
     public function getKey($key)
     {
         return $this->meilisearch->getKey($key);
@@ -27,9 +29,9 @@ trait SettingsTrait
         return $this->meilisearch->createKey($set);
     }
 
-    public function updateKey($key,$set)
+    public function updateKey($key, $set)
     {
-        return $this->meilisearch->updateKey($key,$set);
+        return $this->meilisearch->updateKey($key, $set);
     }
 
     public function deleteKey($key)
@@ -39,7 +41,7 @@ trait SettingsTrait
 
     public function stats()
     {
-        return $this->meilisearch->index($this->index)->stats();
+        return $this->meilisearch->index($this->_index)->stats();
     }
 
     public function health()
@@ -61,150 +63,151 @@ trait SettingsTrait
     {
         return $this->meilisearch->getDumpStatus($uid);
     }
-    
+
     public function getRankingRules(): array
     {
-        return $this->meilisearch->index($this->index)->getRankingRules();
+        return $this->meilisearch->index($this->_index)->getRankingRules();
     }
 
     public function updateRankingRules(array $rankingRules): array
     {
-        return $this->meilisearch->index($this->index)->updateRankingRules($rankingRules);
+        return $this->meilisearch->index($this->_index)->updateRankingRules($rankingRules);
     }
 
     public function resetRankingRules(): array
     {
-        return $this->meilisearch->index($this->index)->resetRankingRules();
+        return $this->meilisearch->index($this->_index)->resetRankingRules();
     }
 
     public function getDistinctAttribute()
     {
-        return $this->meilisearch->index($this->index)->getDistinctAttribute();
+        return $this->meilisearch->index($this->_index)->getDistinctAttribute();
     }
 
     public function updateDistinctAttribute(string $distinctAttribute): array
     {
-        return $this->meilisearch->index($this->index)->updateDistinctAttribute($distinctAttribute);
+        return $this->meilisearch->index($this->_index)->updateDistinctAttribute($distinctAttribute);
     }
 
     public function resetDistinctAttribute(): array
     {
-        return $this->meilisearch->index($this->index)->resetDistinctAttribute();
+        return $this->meilisearch->index($this->_index)->resetDistinctAttribute();
     }
 
     // Settings - Searchable attributes
 
     public function getSearchableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->getSearchableAttributes();
+        return $this->meilisearch->index($this->_index)->getSearchableAttributes();
     }
 
     public function updateSearchableAttributes(array $searchableAttributes): array
     {
-        return $this->meilisearch->index($this->index)->updateSearchableAttributes($searchableAttributes);
+        return $this->meilisearch->index($this->_index)->updateSearchableAttributes($searchableAttributes);
     }
 
     public function resetSearchableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->resetSearchableAttributes();
+        return $this->meilisearch->index($this->_index)->resetSearchableAttributes();
     }
 
     // Settings - Displayed attributes
 
     public function getDisplayedAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->getDisplayedAttributes();
+        return $this->meilisearch->index($this->_index)->getDisplayedAttributes();
     }
 
     public function updateDisplayedAttributes(array $displayedAttributes): array
     {
-        return $this->meilisearch->index($this->index)->updateDisplayedAttributes($displayedAttributes);
+        return $this->meilisearch->index($this->_index)->updateDisplayedAttributes($displayedAttributes);
     }
 
     public function resetDisplayedAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->resetDisplayedAttributes();
+        return $this->meilisearch->index($this->_index)->resetDisplayedAttributes();
     }
 
     // Settings - Stop-words
 
     public function getStopWords(): array
     {
-        return $this->meilisearch->index($this->index)->getStopWords();
+        return $this->meilisearch->index($this->_index)->getStopWords();
     }
 
     public function updateStopWords(array $stopWords): array
     {
-        return $this->meilisearch->index($this->index)->updateStopWords($stopWords);
+        return $this->meilisearch->index($this->_index)->updateStopWords($stopWords);
     }
 
     public function resetStopWords(): array
     {
-        return $this->meilisearch->index($this->index)->resetStopWords();
+        return $this->meilisearch->index($this->_index)->resetStopWords();
     }
 
     // Settings - Synonyms
 
     public function getSynonyms(): array
     {
-        return $this->meilisearch->index($this->index)->getSynonyms();
+        return $this->meilisearch->index($this->_index)->getSynonyms();
     }
 
     public function updateSynonyms(array $synonyms): array
     {
-        return $this->meilisearch->index($this->index)->updateSynonyms($synonyms);
+        return $this->meilisearch->index($this->_index)->updateSynonyms($synonyms);
     }
 
     public function resetSynonyms(): array
     {
-        return $this->meilisearch->index($this->index)->resetSynonyms();
+        return $this->meilisearch->index($this->_index)->resetSynonyms();
     }
 
     // Settings - Filterable Attributes
 
     public function getFilterableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->getFilterableAttributes();
+        return $this->meilisearch->index($this->_index)->getFilterableAttributes();
     }
 
     public function updateFilterableAttributes(array $filterableAttributes): array
     {
-        return $this->meilisearch->index($this->index)->updateFilterableAttributes($filterableAttributes);
+        return $this->meilisearch->index($this->_index)->updateFilterableAttributes($filterableAttributes);
     }
 
     public function resetFilterableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->resetFilterableAttributes();
+        return $this->meilisearch->index($this->_index)->resetFilterableAttributes();
     }
 
     // Settings - Sortable Attributes
 
     public function getSortableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->getSortableAttributes();
+        return $this->meilisearch->index($this->_index)->getSortableAttributes();
     }
 
     public function updateSortableAttributes(array $sortableAttributes): array
     {
-        return $this->meilisearch->index($this->index)->updateSortableAttributes($sortableAttributes);
+        return $this->meilisearch->index($this->_index)->updateSortableAttributes($sortableAttributes);
     }
 
     public function resetSortableAttributes(): array
     {
-        return $this->meilisearch->index($this->index)->resetSortableAttributes();
+        return $this->meilisearch->index($this->_index)->resetSortableAttributes();
     }
+
     public function getSettings(): array
     {
-        return $this->meilisearch->index($this->index)->getSettings();
+        return $this->meilisearch->index($this->_index)->getSettings();
     }
 
     public function updateSettings($settings): array
     {
-        return $this->meilisearch->index($this->index)->updateSettings($settings);
+        return $this->meilisearch->index($this->_index)->updateSettings($settings);
     }
 
     public function resetSettings(): array
     {
-        return $this->meilisearch->index($this->index)->resetSettings();
+        return $this->meilisearch->index($this->_index)->resetSettings();
     }
 }

@@ -11,12 +11,13 @@
  *-------------------------------------------------------------------------w*
  * @since      shopwwi象讯·PHP商城系统Pro
  *-------------------------------------------------------------------------w*
-* author tycoonSong 8988354@qq.com
+ * author tycoonSong 8988354@qq.com
  *-------------------------------------------------------------------------i*
  */
 
 namespace Shopwwi\WebmanSearch\Adapter;
 
+use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -28,7 +29,9 @@ use Shopwwi\WebmanSearch\TraitFace\WhereTrait;
 class ElasticSearch
 {
     use WhereTrait;
+
     protected $model;
+    /** @var Client */
     protected $elasticsearch;
     protected $_index = 'goods';
     protected $_id = 'id';
@@ -51,15 +54,15 @@ class ElasticSearch
      * @param $other
      * @return $this
      */
-    public function make($options,$other)
+    public function make($options, $other)
     {
-        if(isset($other['id'])){
+        if (isset($other['id'])) {
             $this->_id = $other['id'];
         }
-        if(isset($other['index'])){
+        if (isset($other['index'])) {
             $this->_index = $other['index'];
         }
-        if(isset($other['type'])){
+        if (isset($other['type'])) {
             $this->_type = $other['type'];
         }
         // Check if connection is already loaded.
@@ -91,7 +94,7 @@ class ElasticSearch
 
     /**
      * 返回实例
-     * @return mixed
+     * @return Client
      */
     public function us()
     {
@@ -178,7 +181,7 @@ class ElasticSearch
             throw new \Exception('你的索引参数不是一个数组');
         }
         if (isset($data[0]) && is_array($data[0])) {
-           $list = new Collection([]);
+            $list = new Collection([]);
             // 多维数组
             foreach ($data as $v) {
                 $params = [
@@ -187,8 +190,8 @@ class ElasticSearch
                     'client' => ['ignore' => $this->ignores],
                     'body' => $v
                 ];
-               $created =  $this->elasticsearch->index($params);
-               $list->push($created);
+                $created = $this->elasticsearch->index($params);
+                $list->push($created->asArray());
             }
             return $list;
         } else {
@@ -224,8 +227,8 @@ class ElasticSearch
                     'client' => ['ignore' => $this->ignores],
                     'body' => ['doc' => $v],
                 ];
-                $updated =  $this->elasticsearch->update($params);
-                $list->push($updated);
+                $updated = $this->elasticsearch->update($params);
+                $list->push($updated->asArray());
             }
             return $list;
         } else {
@@ -251,18 +254,18 @@ class ElasticSearch
         if (!$ids) {
             throw new \Exception('索引主键不能为空');
         }
-        if(is_array($ids)){ //批量删除
-            foreach ($ids as $id){
+        if (is_array($ids)) { //批量删除
+            foreach ($ids as $id) {
                 $params = [
                     'index' => $this->_index,
-                    'id'    => $id
+                    'id' => $id
                 ];
                 $this->elasticsearch->delete($params);
             }
-        }else{ //单个删除
+        } else { //单个删除
             $params = [
                 'index' => $this->_index,
-                'id'    => $ids
+                'id' => $ids
             ];
             return $this->elasticsearch->delete($params);
         }
@@ -338,9 +341,9 @@ class ElasticSearch
     {
         $params = [
             'index' => $this->_index,
-            'id'    => $id
+            'id' => $id
         ];
-        return  $this->getFirst($this->elasticsearch->get($params)->asArray());
+        return $this->getFirst($this->elasticsearch->get($params)->asArray());
     }
 
     /**
@@ -366,7 +369,7 @@ class ElasticSearch
     {
         $query = [
             'index' => $this->_index,
-            'type'=> $this->_type,
+            'type' => $this->_type,
             'suggest_field' => 'goods_name',
             'suggest_text' => $this->query,
             'suggest_mode' => 'always',
@@ -409,10 +412,10 @@ class ElasticSearch
 
         //  $query["search_type"] = '';
         // $query["scroll"] = $scroll;
-
         $result = $this->elasticsearch->search($query);
         return $this->getAll($result->asArray());
     }
+
     /**
      * Retrieve only first record
      * @param array $result
@@ -435,11 +438,14 @@ class ElasticSearch
 
         return $new;
     }
+
     /**
      * 数据整理
-     * @param $result
+     * @param array $result
+     * @return Collection
      */
-    protected function getAll($result = []){
+    protected function getAll($result = [])
+    {
         if (array_key_exists("hits", $result)) {
             $new = [];
             foreach ($result["hits"]["hits"] as $row) {
@@ -456,7 +462,7 @@ class ElasticSearch
             $collect->items = $new;
             $total = $result["hits"]["total"];
             $collect->total = is_array($total) ? $total["value"] : $total;
-            $collect->page = request() ? request()->input('page',1) : $this->page;
+            $collect->page = request() ? request()->input('page', 1) : $this->page;
             $collect->max_score = $result["hits"]["max_score"];
             $collect->took = $result["took"];
             $collect->timed_out = $result["timed_out"];
@@ -470,7 +476,7 @@ class ElasticSearch
 
     /**
      * 数据整理
-     * @return array|string
+     * @return array
      */
     protected function filters()
     {
@@ -527,18 +533,18 @@ class ElasticSearch
             $_source = array_key_exists("_source", $body) ? $body["_source"] : [];
             $body["_source"] = array_merge($_source, $this->searchable);
         }
-        if(!empty($this->query)){
+        if (!empty($this->query)) {
             $body["query"]["bool"]["must"][] = [
                 "query_string" => ["query" => $this->query]
             ];
         }
-        $body["query"] = isset($body["query"]) ? $body["query"]: [];
-        if(count($body["query"]) == 0){
+        $body["query"] = isset($body["query"]) ? $body["query"] : [];
+        if (count($body["query"]) == 0) {
             unset($body["query"]);
         }
-//        if(count($this->attributesToHighlight)){
-//            $body["highlight"]['fields'] = $this->attributesToHighlight;
-//        }
+        if (count($this->attributesToHighlight)) {
+            $body["highlight"]['fields'] = $this->attributesToHighlight;
+        }
         if (count($this->sort)) {
             $sortFields = array_key_exists("sort", $body) ? $body["sort"] : [];
             $body["sort"] = array_unique(array_merge($sortFields, $this->sort), SORT_REGULAR);

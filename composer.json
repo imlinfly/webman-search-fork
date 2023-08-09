@@ -1,7 +1,10 @@
 {
-  "name": "shopwwi/webman-search",
+  "name": "linfly/webman-search-fork",
   "description": "search for the webman",
-  "keywords": ["webman", "meilisearch"],
+  "keywords": [
+    "webman",
+    "meilisearch"
+  ],
   "type": "library",
   "require": {
     "php": ">=7.2 || ^8.0",
