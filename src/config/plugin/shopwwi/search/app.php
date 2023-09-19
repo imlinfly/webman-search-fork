@@ -11,7 +11,7 @@
  *-------------------------------------------------------------------------w*
  * @since      shopwwi象讯·PHP商城系统Pro
  *-------------------------------------------------------------------------w*
-* author tycoonSong 8988354@qq.com
+ * author tycoonSong 8988354@qq.com
  *-------------------------------------------------------------------------i*
  */
 
@@ -19,7 +19,7 @@ return [
     'enable' => true,
     'default' => 'xunsearch',
     'holder' => [
-        'meilisearch'=>[
+        'meilisearch' => [
             'driver' => \Shopwwi\WebmanSearch\Adapter\MeiliSearch::class,
             'key' => '',
             'api' => 'http://127.0.0.1:7700',
@@ -33,7 +33,7 @@ return [
                 ]
             ]
         ],
-        'elasticsearch'=>[
+        'elasticsearch' => [
             'driver' => \Shopwwi\WebmanSearch\Adapter\ElasticSearch::class,
             'default' => 'default',
             'connections' => [
@@ -44,7 +44,12 @@ return [
                     'logging' => [
                         'enabled' => false,
                         'level' => 'all',
-                        'location' =>  runtime_path().'/logs/elasticsearch.log'
+                        'max_files' => 31,
+                        'location' => runtime_path() . '/logs/elasticsearch/elasticsearch.log',
+                        'formatter' => [
+                            'class' => Monolog\Formatter\LineFormatter::class,
+                            'constructor' => [null, 'Y-m-d H:i:s', true],
+                        ],
                     ],
                 ]
             ],
@@ -73,17 +78,17 @@ return [
                                 'trigram' => [
                                     "type" => "custom",
                                     "tokenizer" => "standard",
-                                    "filter" => ["lowercase","shingle"]
+                                    "filter" => ["lowercase", "shingle"]
                                 ],
                                 'reverse' => [
                                     "type" => "custom",
                                     "tokenizer" => "standard",
-                                    "filter" => ["lowercase","reverse"]
+                                    "filter" => ["lowercase", "reverse"]
                                 ],
-                                "pinyin_analyzer" =>[
+                                "pinyin_analyzer" => [
                                     "type" => "custom",
                                     "tokenizer" => "my_pinyin",
-                                    "filter" => ["lowercase","shingle"]
+                                    "filter" => ["lowercase", "shingle"]
                                 ]
                             ],
                             'filter' => [
@@ -117,7 +122,7 @@ return [
                                     'analyzer' => 'ik_max_word',
                                     'fields' => [
                                         'py' => [
-                                            'type'=>'completion',
+                                            'type' => 'completion',
                                             'analyzer' => 'pinyin_analyzer'
                                         ]
                                     ]
@@ -129,7 +134,7 @@ return [
 
             ]
         ],
-        'xunsearch'=>[
+        'xunsearch' => [
             'driver' => \Shopwwi\WebmanSearch\Adapter\XunSearch::class,
             'indices' => [
                 'goods' => []

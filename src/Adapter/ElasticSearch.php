@@ -19,7 +19,7 @@ namespace Shopwwi\WebmanSearch\Adapter;
 
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Shopwwi\WebmanSearch\Support\Arr;
 use Shopwwi\WebmanSearch\Support\Collection;
@@ -110,7 +110,22 @@ class ElasticSearch
     {
         if (Arr::get($config, 'logging.enabled')) {
             $logger = new Logger('name');
-            $logger->pushHandler(new StreamHandler(Arr::get($config, 'logging.location'), Arr::get($config, 'logging.level', 'all')));
+            $handler = new RotatingFileHandler(
+                Arr::get($config, 'logging.location'),
+                Arr::get($config, 'logging.max_files', 64),
+                Arr::get($config, 'logging.level', 'all')
+            );
+
+            $formatter = Arr::get($config, 'logging.formatter', []);
+
+            if ($formatter) {
+                $formatterClass = Arr::get($formatter, 'class');
+                $formatterConstructor = Arr::get($formatter, 'constructor', []);
+                $formatter = new $formatterClass(...$formatterConstructor);
+                $handler->setFormatter($formatter);
+            }
+
+            $logger->pushHandler($handler);
             $clientBuilder->setLogger($logger);
         }
         return $clientBuilder;
